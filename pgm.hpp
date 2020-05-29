@@ -9,10 +9,11 @@ class PGM : public Image
     private:
         std::vector <size_t> pixels;
     public:
-        virtual void open(String) override;
+        virtual void open() override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
         virtual Image* clone()const{return new PGM(*this);}
+        virtual void save(const String&){};
         PGM(String);
         PGM();
 };
@@ -29,9 +30,9 @@ PGM::PGM(String path)
     extension[2] = 'm';
     ///open(path);
 }
-void PGM::open(String path)
+void PGM::open()
 {
-    std::ifstream file(path.stringToChar(), std::ios::in | std::ios::binary);
+    std::ifstream file(name.stringToChar(), std::ios::in | std::ios::binary);
     if(!file)
     {
         std::cerr << "Failed to open!" << std::endl;
@@ -44,7 +45,7 @@ void PGM::open(String path)
 
     type[3] = '\0';
     std::cout << "magicNumber=" << type << std::endl;
-    size_t range = 0;
+    range = 0;
     size_t arr[3] = {0, 0, 0};
     char c;
     for(size_t i = 0; i < 3; i ++)

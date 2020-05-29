@@ -33,7 +33,6 @@ public:
     friend std::istream& operator>>(std::istream& is, String& str);
     friend std::ostream& operator<<(std::ostream& os, const String& str);
     friend std::istream& getline(std::istream& is, String& str);
-
 };
 
 void String::copy_string(const String& other)

@@ -21,9 +21,10 @@ int main()
     im.print();
     PGM im1;
     im1.open("picture4.pgm");
-    PBM im2;
-    im2.open("picture6.pbm");
     */
-    User u;
+    PBM im2("picture6.pbm");
+    im2.open();
+    im2.save("picture6.pbm");
+    //User u;
     return 0;
 }

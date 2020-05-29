@@ -3,19 +3,49 @@
 #include <iostream>
 #include "image.h"
 #include <vector>
-
+#include <fstream>
 class PBM : public Image
 {
     private:
         std::vector <bool> pixels;
     public:
-        virtual void open(String) override;
+        virtual void open() override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
         virtual Image* clone()const{return new PBM(*this);}
         PBM();
         PBM(String);
+        /*virtual void grayscale(const size_t&) ;
+        virtual void monochrome(const size_t&) ;
+        virtual void negative(const size_t&);*/
+        virtual void save(const String&) ;
 };
+void PBM::save(const String& name_)
+{
+    name = name_;
+    std::ofstream file(name.stringToChar(), std::ios::out | std::ios::binary);
+    if(!file)
+    {
+        std::cerr << "Couldn't open the file!" << std::endl;
+        return;
+    }
+    char c = 'P';
+    file.write((char*)&c, sizeof(c));
+    c = '4';
+    file.write((char*)&c, sizeof(c));
+    c = '\n';
+    file.write((char*)&c, sizeof(c));
+    file.write((char*)&width, sizeof(width));
+    file.write((char*)&height, sizeof(height));
+    file.write((char*)&range, sizeof(range));
+    file.write((char*)&c, sizeof(c));
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        bool now = pixels[i];
+        file.write((char*)&now, sizeof(now));
+    }
+    file.close();
+}
 PBM::PBM()
 {
     name = "";
@@ -29,9 +59,9 @@ PBM::PBM(String path)
     extension[2] = 'm';
     ///open(path);
 }
-void PBM::open(String path)
+void PBM::open()
 {
-    std::ifstream file(path.stringToChar(), std::ios::in | std::ios::binary);
+    std::ifstream file(name.stringToChar(), std::ios::in | std::ios::binary);
     if(!file)
     {
         std::cerr << "Failed to open!" << std::endl;
@@ -44,7 +74,7 @@ void PBM::open(String path)
 
     type[3] = '\0';
     std::cout << "magicNumber=" << type << std::endl;
-    size_t range = 0;
+    range = 0;
     size_t arr[3] = {0, 0, 0};
     char c;
     for(size_t i = 0; i < 3; i ++)

@@ -34,28 +34,28 @@ void Session::saveSession(const String& path)
     for(size_t i = 0; i < numImages; i ++)
         images[i]->open();
     size_t vsz = operations.size();
-    for(size_t i = 0; i < vsz; i ++)
+    /*for(size_t i = 0; i < vsz; i ++)
     {
         if(operations[i] == "grayscale")
         {
             for(size_t j = 0; j < timeAdded[i] - 1; j ++)
-                grayscale(j);
+                images[j]->grayscale();
         }
         else if(operations[i] == "monochrome")
         {
             for(size_t j = 0; j < timeAdded[i] - 1; j ++)
-                monochrome(j);
+                images[j]->monochrome(j);
         }
         else if(operations[i] == "negative")
         {
             for(size_t j = 0; j < timeAdded[i] - 1; j ++)
-                negative(j);
+                images[j]->negative(j);
         }
         else if(operations[i] == "collage")
         {
 
         }
-    }
+    }*/
 
     if(!(path == ""))images[0]->save(path);
     else images[0]->save(images[0]->get_name());///trqbva i name da stane tva podadenoto chrez parametura zaduljitelno!!!!

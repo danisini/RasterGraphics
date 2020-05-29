@@ -142,19 +142,18 @@ User::User()
         {
             String path;
             cin >> path;
-            sessions[currSession]->saveSession(path)
+            sessions[currSession]->saveSession(path);
         }
         else
         if(command == "close")
         {
+            //sessions[currSession]->close();
         }
         else
         if(command == "help")
         {
 
         }
-
-
     }
 }
 
