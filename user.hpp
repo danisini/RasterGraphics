@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include "session.hpp"
-#include "image.hpp"
+#include "image.h"
+
 class User
 {
 
