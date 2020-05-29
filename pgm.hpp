@@ -12,6 +12,7 @@ class PGM : public Image
         virtual void open(String) override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
+        virtual Image* clone()const{return new PGM(*this);}
         PGM(String);
         PGM();
 };

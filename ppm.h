@@ -24,6 +24,7 @@ class PPM : public Image
         virtual void open(String) override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
+        virtual Image* clone()const{return new PPM(*this);}
         PPM();
         PPM(String);
 };

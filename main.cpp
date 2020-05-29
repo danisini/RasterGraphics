@@ -1,9 +1,10 @@
 #include <iostream>
+#include <fstream>
+#include "user.h"
 #include "image.h"
 #include "ppm.h"
 #include "pgm.hpp"
 #include "pbm.hpp"
-#include <fstream>
 using namespace std;
 //#include "user.hpp"
 int main()
@@ -20,9 +21,9 @@ int main()
     im.print();
     PGM im1;
     im1.open("picture4.pgm");
-    */
     PBM im2;
     im2.open("picture6.pbm");
-
+    */
+    User u;
     return 0;
 }
