@@ -35,7 +35,11 @@ PPM::PPM()
 }
 PPM::PPM(String path)
 {
-    open(path);
+    name = path;
+    extension[0] = 'p';
+    extension[1] = 'p';
+    extension[2] = 'm';
+    ///open(path);
 }
 void PPM::open(String path)
 {

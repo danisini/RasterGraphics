@@ -3,15 +3,16 @@
 #include <iostream>
 #include "session.hpp"
 #include "image.h"
-
+using namespace std;
 class User
 {
     private:
         Session** sessions;
-        size_t numSessions;
-        size_t currSession;
+        size_t numSessions, capacity, currSession;
         void deleteUser();
         void copyUser(const User&);
+        void resizeSessions();
+        void save(const String&);
     public:
         User();
         User(const User&);
@@ -20,9 +21,23 @@ class User
 };
 void User::deleteUser()
 {
-    for(size_t i = 0; i < numSessions; i ++)
+    for(size_t i = 0; i < capacity; i ++)
         delete sessions[i];
     if(sessions != nullptr)delete[] sessions;
+}
+void User::resizeSessions()
+{
+    capacity += 8;
+    Session** temp = new Session*[capacity];
+    for(size_t i = 0; i < numSessions; i ++)
+    {
+        temp[i] = sessions[i];
+        delete sessions[i];
+    }
+    delete[] sessions;
+    sessions = new Session*[capacity];
+    sessions = temp;
+    ///ask if this will work or try it
 }
 User::User()
 {
@@ -40,28 +55,30 @@ User::User()
         {
             String path;
             cin >> path;
+            currSession = numSessions;
             numSessions ++;
-            currSession = numSession;
             if(capacity == numSessions)
             {
                 resizeSessions();
             }
-            sessions[currSession].addImage(path);
+            sessions[currSession] = new Session();
+            sessions[currSession]->addImage(path);
+            cout << "Session with ID " << currSession + 1 << " started!" << endl;
         }
         else
         if(command == "grayscale")
         {
-            sessions[currSession].addOperation(0);///grayscale = 0
+            sessions[currSession]->addOperation("grayscale");///grayscale = 0
         }
         else
         if(command == "monochrome")
         {
-            sessions[currSession].addOperation(1);///monochrome = 1
+            sessions[currSession]->addOperation("monochrome");///monochrome = 1
         }
         else
         if(command == "negative")
         {
-            sessions[currSession].addOperation(2);///negative = 2
+            sessions[currSession]->addOperation("negative");///negative = 2
         }
         else
         if(command == "rotate")
@@ -69,23 +86,23 @@ User::User()
             String direction;
             cin >> direction;
             if(direction == "left")
-                sessions[currSession].addOperation(3);/// rotate left = 3
+                sessions[currSession]->addOperation("rotate left");/// rotate left = 3
             else if(direction == "right")
-                sessions[currSession].addOperation(4);///rotate right = 4
+                sessions[currSession]->addOperation("rotate right");///rotate right = 4
             else
                 cout << "Not valid direction." << endl;
         }
         else
         if(command == "undo")
         {
-            sessions[currSession].undo();
+            sessions[currSession]->undo();
         }
         else
         if(command == "add")
         {
             String path;
             cin >> path;
-            sessions[currSession].addImage(path);
+            sessions[currSession]->addImage(path);
         }
         else
         if(command == "session")
@@ -93,7 +110,7 @@ User::User()
             cin >> command;
             if(command == "info")
             {
-                sessions[currSession].sessionInfo();
+                sessions[currSession]->sessionInfo(currSession);
             }
             else cout << "Invalid command." << endl;
         }
@@ -102,7 +119,7 @@ User::User()
         {
             int num;
             cin >> num;
-            if(num < 0 || num > numSessions)
+            if(num <= 0 || num > numSessions)
             {
                 cout << "Not a valid session number." << endl;
             }
@@ -114,8 +131,30 @@ User::User()
         else
         if(command == "collage")
         {
+        }
+        else
+        if(command == "save")
+        {
+            sessions[currSession]->saveSession("");
+        }
+        else
+        if(command == "saveas")
+        {
+            String path;
+            cin >> path;
+            sessions[currSession]->saveSession(path)
+        }
+        else
+        if(command == "close")
+        {
+        }
+        else
+        if(command == "help")
+        {
 
         }
+
+
     }
 }
 
@@ -126,7 +165,8 @@ User::~User()
 void User::copyUser(const User &other)
 {
     numSessions = other.numSessions;
-    sessions = new Session*[numSessions];
+    capacity = other.capacity;
+    sessions = new Session*[capacity];
     for(size_t i = 0; i < numSessions; i ++)
         sessions[i] = other.sessions[i];
 }

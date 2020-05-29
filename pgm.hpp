@@ -23,7 +23,11 @@ PGM::PGM()
 }
 PGM::PGM(String path)
 {
-    open(path);
+    name = path;
+    extension[0] = 'p';
+    extension[1] = 'g';
+    extension[2] = 'm';
+    ///open(path);
 }
 void PGM::open(String path)
 {

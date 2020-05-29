@@ -23,7 +23,11 @@ PBM::PBM()
 }
 PBM::PBM(String path)
 {
-    open(path);
+    name = path;
+    extension[0] = 'p';
+    extension[1] = 'b';
+    extension[2] = 'm';
+    ///open(path);
 }
 void PBM::open(String path)
 {
