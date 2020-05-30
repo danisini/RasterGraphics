@@ -15,11 +15,19 @@ class PBM : public Image
         virtual Image* clone()const{return new PBM(*this);}
         PBM();
         PBM(String);
-        /*virtual void grayscale(const size_t&) ;
-        virtual void monochrome(const size_t&) ;
-        virtual void negative(const size_t&);*/
-        virtual void save(const String&) ;
+        virtual void grayscale(){}
+        virtual void monochrome(){}
+        virtual void negative();
+        virtual void save(const String&);
+        virtual void rotate(const String&){}
 };
+void PBM::negative()
+{
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        pixels[i] = 1 - pixels[i];
+    }
+}
 void PBM::save(const String& name_)
 {
     name = name_;

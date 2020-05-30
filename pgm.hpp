@@ -14,9 +14,28 @@ class PGM : public Image
         const size_t get_height()const{return height;}
         virtual Image* clone()const{return new PGM(*this);}
         virtual void save(const String&);
+        virtual void grayscale(){;}
+        virtual void monochrome();
+        virtual void negative();
+        virtual void rotate(const String&){}
         PGM(String);
         PGM();
 };
+void PGM::negative()
+{
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        pixels[i] = range - pixels[i];
+    }
+}
+void PGM::monochrome()
+{
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        if(pixels[i] > range / 2)pixels[i] = range;
+        else pixels[i] = 0;
+    }
+}
 PGM::PGM()
 {
     name = "";

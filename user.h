@@ -13,12 +13,34 @@ class User
         void copyUser(const User&);
         void resizeSessions();
         void save(const String&);
+        void help();
     public:
         User();
         User(const User&);
         User& operator=(const User&);
         ~User();
 };
+void User::help()
+{
+    std::cout << "The following commands are supported:" << std::endl;
+    std::cout << "load <fileName>    |" << "opens a file with name <fileName>" << std::endl;
+    std::cout << "close              |" << "closes currently opened session" << std::endl;
+    std::cout << "help               |" << "prints this information" << std::endl;
+    std::cout << "save               |" << "saves currently opened sessions" << std::endl;
+    std::cout << "save as <fileName> |" << "saves currently opened sessions and the first one with name <fileName>" << std::endl;
+    std::cout << "exit               |" << "exits the program" << std::endl;
+    std::cout << "grayscale          |" << "all the images in the current session become gray-like" << std::endl;
+    std::cout << "monochrome         |" << "all the images in the current session become black and white" << std::endl;
+    std::cout << "negative           |" << "all the images in the current session become with the opposite colours" << std::endl;
+    std::cout << "rotate <direction> |" << "all the images in the current session are turned either to the left, or to the right" << std::endl;
+    std::cout << "undo               |" << "undoes the last operation in the current session if there is such" << std::endl;
+    std::cout << "add <image>        |" << "adds image with name <image> in the current session" << std::endl;
+    std::cout << "session info       |" << "gives information about the images and the operations in the session" << std::endl;
+    std::cout << "switch <session>   |" << "switches to session with ID <session>" << std::endl;
+    std::cout << "collage <direction>|" << "makes collage in direction either horizontal or vertical" << std::endl;
+    std::cout << "<image1> <image2>  |" << "for images with name <image1> and <image2> if they save the same size" << std::endl;
+    std::cout << "<outimage>         |" << "and the result is stored in image with name <outimage> and this image is added to the session" << std::endl;
+}
 void User::deleteUser()
 {
     for(size_t i = 0; i < capacity; i ++)
@@ -147,12 +169,13 @@ User::User()
         else
         if(command == "close")
         {
-            //sessions[currSession]->close();
+            delete sessions[currSession];
+            currSession--;
         }
         else
         if(command == "help")
         {
-
+            help();
         }
     }
 }

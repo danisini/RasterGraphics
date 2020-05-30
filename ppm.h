@@ -8,8 +8,8 @@
 
 struct RGB
 {
-    int R, G, B;
-    RGB(int R_ = 0, int G_ = 0, int B_ = 0)
+    size_t R, G, B;
+    RGB(size_t R_ = 0, size_t G_ = 0, size_t B_ = 0)
     {
         R = R_;
         G = G_;
@@ -26,9 +26,101 @@ class PPM : public Image
         const size_t get_height()const{return height;}
         virtual Image* clone()const{return new PPM(*this);}
         virtual void save(const String&);
+        virtual void grayscale();
+        virtual void monochrome();
+        virtual void negative();
+        virtual void rotate(const String&);
         PPM();
         PPM(String);
 };
+void PPM::rotate(const String& direction)
+{
+    if(direction == "right")
+    {
+        std::vector <RGB> temp;
+        for(size_t i = 0; i < width; i ++)
+        {
+            size_t i1 = width * (height - 1) + i;
+            for(size_t j = 0; j < height; j ++)
+            {
+                temp.push_back(pixels[i1]);
+                i1 -= width;
+            }
+        }
+        for(size_t i = 0; i < width * height; i ++)
+        {
+            pixels[i].R = temp[i].R;
+            pixels[i].G = temp[i].G;
+            pixels[i].B = temp[i].B;
+        }
+
+        size_t swp;
+        swp = height;
+        height = width;
+        width = swp;
+    }
+    else if(direction == "left")
+    {
+        std::vector <RGB> temp;
+        std::cout << "tes3 "<< height << " "<< width << std::endl;
+        for(size_t i = 0; i < width; i ++)
+        {
+            size_t i1 = width - i - 1;
+            for(size_t j = 0; j < height; j ++)
+            {
+                temp.push_back(pixels[i1]);
+                i1 += width;
+            }
+        }
+        std::cout << "test2" << std::endl;
+        for(size_t i = 0; i < width * height; i ++)
+        {
+            pixels[i].R = temp[i].R;
+            pixels[i].G = temp[i].G;
+            pixels[i].B = temp[i].B;
+        }
+        std::cout << "test1" << std::endl;
+        size_t swp;
+        swp = height;
+        height = width;
+        width = swp;
+    }
+    else std::cout << "Not a correct inputed direction." << std::endl;
+}
+void PPM::negative()
+{
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        pixels[i].R = range - pixels[i].R;
+        pixels[i].G = range - pixels[i].G;
+        pixels[i].B = range - pixels[i].B;
+    }
+}
+void PPM::monochrome()
+{
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        size_t r = pixels[i].R, g = pixels[i].G, b = pixels[i].B;
+        size_t now =  (double)(r * 0.2125) + (double)(g * 0.7154) + (double)(b * 0.0721);
+        if(now > range / 2) now = range;
+        else now = 0;
+        pixels[i].R = pixels[i].G = pixels[i].B = now;
+        /*pixels[i].R = (double)(r * 0.2125) + (double)(g * 0.7154) + (double)(b * 0.0721);
+        pixels[i].G = (double)(r * 0.2125) + (double)(g * 0.7154) + (double)(b * 0.0721);
+        pixels[i].B = (double)(r * 0.2125) + (double)(g * 0.7154) + (double)(b * 0.0721);
+        */
+    }
+}
+void PPM::grayscale()
+{
+    for(size_t i = 0; i < pixels.size(); i ++)
+    {
+        size_t r = pixels[i].R, g = pixels[i].G, b = pixels[i].B;
+        pixels[i].R = (double)(r * 0.299) + (double)(g * 0.587) + (double)(b * 0.114);
+        pixels[i].G = (double)(r * 0.299) + (double)(g * 0.587) + (double)(b * 0.114);
+        pixels[i].B = (double)(r * 0.299) + (double)(g * 0.587) + (double)(b * 0.114);
+    }
+}
 PPM::PPM()
 {
     name = "";
@@ -51,7 +143,7 @@ void PPM::save(const String& name_)
         std::cerr << "Couldn't open the file!" << std::endl;
         return;
     }
-    file << "P2" << '\n' << width << " " << height << '\n' << range << '\n';
+    file << "P3" << '\n' << width << " " << height << '\n' << range << '\n';
     char c;
     int num, p = 0;
     RGB curr;

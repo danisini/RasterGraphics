@@ -16,12 +16,17 @@ class Image
         virtual void open() = 0;
         virtual Image* clone()const = 0;
         const String get_name()const {return name;}
-        void print()const{std::cout << "height = " << height << " width= " << width << std::endl;}
-
-        //virtual void grayscale(const size_t&) = 0;
-        //virtual void monochrome(const size_t&) = 0;
-        //virtual void negative(const size_t&) = 0;
+        virtual void grayscale() = 0;
+        virtual void monochrome() = 0;
+        virtual void negative() = 0;
         virtual void save(const String&) = 0;
-
+        virtual void rotate(const String&) = 0;
 };
+Image& Image::operator=(const Image &other)
+{
+    for(size_t i = 0; i < 3; i ++)
+        extension[i] = other.extension[i];
+    return *this;
+}
+
 #endif // _IMAGE_H_
