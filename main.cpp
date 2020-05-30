@@ -16,15 +16,19 @@ int main()
     for(int i = 0; i < 3*4; i ++)oFile << 3 << " ";
     oFile.close();
     */
-    /**PPM im;
-    im.open("picture3.ppm");
-    im.print();
-    PGM im1;
-    im1.open("picture4.pgm");
+    /**PPM im("picture1.ppm");
+    im.open();
+    im.save("picture2.ppm");
     */
-    PBM im2("picture6.pbm");
+    /**
+    PGM im1("picture14.pgm");
+    im1.open();
+    im1.save("picture14.pgm");
+    */
+    PBM im2("picture3.pbm");
     im2.open();
-    im2.save("picture6.pbm");
+    im2.save("picture3.pbm");
+
     //User u;
     return 0;
 }

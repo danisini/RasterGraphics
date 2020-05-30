@@ -25,7 +25,7 @@ class PPM : public Image
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
         virtual Image* clone()const{return new PPM(*this);}
-        virtual void save(const String&){};
+        virtual void save(const String&);
         PPM();
         PPM(String);
 };
@@ -42,38 +42,49 @@ PPM::PPM(String path)
     extension[2] = 'm';
     ///open(path);
 }
+void PPM::save(const String& name_)
+{
+    name = name_;
+    std::ofstream file(name.stringToChar(), std::ios::out);
+    if(!file)
+    {
+        std::cerr << "Couldn't open the file!" << std::endl;
+        return;
+    }
+    file << "P2" << '\n' << width << " " << height << '\n' << range << '\n';
+    char c;
+    int num, p = 0;
+    RGB curr;
+    for(size_t i = 0; i < height; i ++)
+    {
+        for(size_t j = 0; j < width - 1; j ++)
+        {
+            curr = pixels[p ++];
+            file << curr.R << " " << curr.G << " " << curr.B << " ";
+        }
+        file << pixels[p].R << " " << pixels[p].G << " " << pixels[p].B << '\n';
+        p ++;
+    }
+    file.close();
+}
 void PPM::open()
 {
-    std::ifstream file(name.stringToChar(), std::ios::in | std::ios::binary);
+    std::ifstream file(name.stringToChar(), std::ios::in);
     if(!file)
     {
         std::cerr << "Failed to open!" << std::endl;
         return;
     }
     char type[4];
-    file.read((char*)&type[0], sizeof(type[0]));
-    file.read((char*)&type[1], sizeof(type[1]));
-    file.read((char*)&type[2], sizeof(type[2]));
-
+    file.get(type[0]);
+    file.get(type[1]);
+    file.get(type[2]);
     type[3] = '\0';
-    char newLine;
-    std::cout << "magicNumber=" << type << std::endl;
-    range = 0;
-    short width_ = 0;
-    short height_ = 0;
-
     size_t arr[3] = {0, 0, 0};
     char c;
     for(size_t i = 0; i < 3; i ++)
     {
-        bool flag = 1;
-        while(flag)
-        {
-            file.read((char*)&c, sizeof(c));
-            if(c >= '0' && c <= '9')
-                arr[i] = arr[i] * 10 + (c - '0');
-            else flag = 0;
-        }
+        file >> arr[i];
     }
     width = arr[0];
     height = arr[1];
@@ -84,14 +95,7 @@ void PPM::open()
         arr[0] = arr[1] = arr[2] = 0;
         for(size_t j = 0; j < 3; j ++)
         {
-            bool flag = 1;
-            while(flag)
-            {
-                file.read((char*)&c, sizeof(c));
-                if(c >= '0' && c <= '9')
-                    arr[j] = arr[j] * 10 + (c - '0');
-                else flag = 0;
-            }
+            file >> arr[j];
         }
         curr.R = arr[0];
         curr.G = arr[1];

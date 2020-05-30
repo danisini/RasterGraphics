@@ -23,32 +23,31 @@ class PBM : public Image
 void PBM::save(const String& name_)
 {
     name = name_;
-    std::ofstream file(name.stringToChar(), std::ios::out | std::ios::binary);
+    std::ofstream file(name.stringToChar(), std::ios::out);
     if(!file)
     {
         std::cerr << "Couldn't open the file!" << std::endl;
         return;
     }
-    char c = 'P';
-    file.write((char*)&c, sizeof(c));
-    c = '4';
-    file.write((char*)&c, sizeof(c));
-    c = '\n';
-    file.write((char*)&c, sizeof(c));
-    file.write((char*)&width, sizeof(width));
-    file.write((char*)&height, sizeof(height));
-    file.write((char*)&range, sizeof(range));
-    file.write((char*)&c, sizeof(c));
-    for(size_t i = 0; i < pixels.size(); i ++)
+    file << "P1" << '\n' << width << " " << height << '\n';
+    char c;
+    bool num;
+    size_t p = 0;
+    for(size_t i = 0; i < height; i ++)
     {
-        bool now = pixels[i];
-        file.write((char*)&now, sizeof(now));
+        for(size_t j = 0; j < width; j ++)
+        {
+            num = pixels[p++];
+            file << num;
+        }
+        file << '\n';
     }
     file.close();
 }
 PBM::PBM()
 {
     name = "";
+    width = height = range = 0;
     extension[0] = '\0';
 }
 PBM::PBM(String path)
@@ -61,54 +60,35 @@ PBM::PBM(String path)
 }
 void PBM::open()
 {
-    std::ifstream file(name.stringToChar(), std::ios::in | std::ios::binary);
+    std::ifstream file(name.stringToChar(), std::ios::in);
     if(!file)
     {
         std::cerr << "Failed to open!" << std::endl;
         return;
     }
     char type[4];
-    file.read((char*)&type[0], sizeof(type[0]));
-    file.read((char*)&type[1], sizeof(type[1]));
-    file.read((char*)&type[2], sizeof(type[2]));
-
+    file.get(type[0]);
+    file.get(type[1]);
+    file.get(type[2]);
     type[3] = '\0';
-    std::cout << "magicNumber=" << type << std::endl;
-    range = 0;
-    size_t arr[3] = {0, 0, 0};
+    size_t arr[2] = {0, 0};
     char c;
-    for(size_t i = 0; i < 3; i ++)
+    for(size_t i = 0; i < 2; i ++)
     {
-        bool flag = 1;
-        while(flag)
-        {
-            file.read((char*)&c, sizeof(c));
-            if(c >= '0' && c <= '9')
-                arr[i] = arr[i] * 10 + (c - '0');
-            else flag = 0;
-        }
+        file >> arr[i];
     }
     width = arr[0];
     height = arr[1];
-    range = arr[2];
-
-    std::cout << width <<" " <<height << "  " << range <<  std::endl;
-    bool curr;
-    for(size_t i = 0; i < height*width;)
+    range = 0;
+    char curr;
+    for(size_t i = 0; i < width * height;)
     {
-        file.get(c);
-        for(int j = 7; j >= 0; j --)
-        {
-            int now = (c >> i) & 1;
-
-            if(now >= 0 && now <= 1)
+            file.get(curr);
+            if(curr >= '0'  && curr <= '1')
             {
-                curr = now;
-                std::cout << curr << std::endl;
-                pixels.push_back(curr);
+                pixels.push_back(curr - '0');
                 i ++;
             }
-        }
     }
     file.close();
 }

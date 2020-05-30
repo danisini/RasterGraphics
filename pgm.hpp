@@ -13,7 +13,7 @@ class PGM : public Image
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
         virtual Image* clone()const{return new PGM(*this);}
-        virtual void save(const String&){};
+        virtual void save(const String&);
         PGM(String);
         PGM();
 };
@@ -21,6 +21,7 @@ PGM::PGM()
 {
     name = "";
     extension[0] = '\0';
+    width = height = range = 0;
 }
 PGM::PGM(String path)
 {
@@ -30,54 +31,56 @@ PGM::PGM(String path)
     extension[2] = 'm';
     ///open(path);
 }
+void PGM::save(const String& name_)
+{
+    name = name_;
+    std::ofstream file(name.stringToChar(), std::ios::out);
+    if(!file)
+    {
+        std::cerr << "Couldn't open the file!" << std::endl;
+        return;
+    }
+    file << "P2" << '\n' << width << " " << height << '\n' << range << '\n';
+    char c;
+    int num, p = 0;
+    for(size_t i = 0; i < height; i ++)
+    {
+        for(size_t j = 0; j < width - 1; j ++)
+        {
+            num = pixels[p++];
+            file << num << " ";
+        }
+        file << pixels[p ++] << '\n';
+    }
+    file.close();
+}
 void PGM::open()
 {
-    std::ifstream file(name.stringToChar(), std::ios::in | std::ios::binary);
+    std::ifstream file(name.stringToChar(), std::ios::in);
     if(!file)
     {
         std::cerr << "Failed to open!" << std::endl;
         return;
     }
     char type[4];
-    file.read((char*)&type[0], sizeof(type[0]));
-    file.read((char*)&type[1], sizeof(type[1]));
-    file.read((char*)&type[2], sizeof(type[2]));
-
+    file.get(type[0]);
+    file.get(type[1]);
+    file.get(type[2]);
     type[3] = '\0';
-    std::cout << "magicNumber=" << type << std::endl;
-    range = 0;
     size_t arr[3] = {0, 0, 0};
     char c;
     for(size_t i = 0; i < 3; i ++)
     {
-        bool flag = 1;
-        while(flag)
-        {
-            file.read((char*)&c, sizeof(c));
-            if(c >= '0' && c <= '9')
-                arr[i] = arr[i] * 10 + (c - '0');
-            else flag = 0;
-        }
+        file >> arr[i];
     }
     width = arr[0];
     height = arr[1];
     range = arr[2];
-
-    std::cout << width <<" " <<height << "  " << range <<  std::endl;
     size_t curr;
-    for(size_t i = 0; i < height*width; i ++)
+    for(size_t i = 0; i < width * height; i ++)
     {
-        curr = 0;
-        bool flag = 1;
-        while(flag)
-        {
-            file.read((char*)&c, sizeof(c));
-            if(c >= '0' && c <= '9')
-                curr = curr * 10 + (c - '0');
-            else flag = 0;
-        }
-        std::cout << curr << std::endl;
-        pixels.push_back(curr);
+            file >> curr;
+            pixels.push_back(curr);
     }
     file.close();
 }
