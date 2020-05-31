@@ -2,18 +2,18 @@
 #define _PBM_H_
 #include <iostream>
 #include "image.h"
-#include <vector>
+#include "vector.hpp"
 #include <fstream>
 
 class PBM : public Image
 {
     private:
-        std::vector <bool> pixels;
+        Vector <bool> pixels;
     public:
         virtual void open() override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
-        virtual Image* clone()const{return new PBM(*this);}
+        //virtual Image* clone()const{return new PBM(*this);}
         PBM();
         PBM(String);
         virtual void grayscale(){}
@@ -76,7 +76,7 @@ void PBM::rotate(const String& direction)
 {
     if(direction == "right")
     {
-        std::vector <bool> temp;
+        Vector <bool> temp;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width * (height - 1) + i;
@@ -98,7 +98,7 @@ void PBM::rotate(const String& direction)
     }
     else if(direction == "left")
     {
-        std::vector <bool> temp;
+        Vector <bool> temp;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width - i - 1;

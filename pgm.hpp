@@ -1,18 +1,18 @@
 #ifndef _PGM_H_
 #define _PGM_H_
 #include <iostream>
-#include <vector>
+#include "vector.hpp"
 #include "image.h"
 
 class PGM : public Image
 {
     private:
-        std::vector <size_t> pixels;
+        Vector <size_t> pixels;
     public:
         virtual void open() override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
-        virtual Image* clone()const{return new PGM(*this);}
+        //virtual Image* clone()const{return new PGM(*this);}
         virtual void save(const String&);
         virtual void grayscale(){;}
         virtual void monochrome();
@@ -75,7 +75,7 @@ void PGM::rotate(const String& direction)
 {
     if(direction == "right")
     {
-        std::vector <size_t> temp;
+        Vector <size_t> temp;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width * (height - 1) + i;
@@ -97,7 +97,7 @@ void PGM::rotate(const String& direction)
     }
     else if(direction == "left")
     {
-        std::vector <size_t> temp;
+        Vector <size_t> temp;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width - i - 1;

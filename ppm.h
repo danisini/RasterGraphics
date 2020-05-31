@@ -4,17 +4,17 @@
 #include "string.hpp"
 #include "image.h"
 #include <fstream>
-#include <vector>
+#include "vector.hpp"
 
 class PPM : public Image
 {
     private:
-        std::vector <RGB> pixels;
+        Vector <RGB> pixels;
     public:
         virtual void open() override;
         const size_t get_width()const{return width;}
         const size_t get_height()const{return height;}
-        virtual Image* clone()const{return new PPM(*this);}
+        //virtual Image* clone()const{return new PPM(*this);}
         virtual void save(const String&);
         virtual void grayscale();
         virtual void monochrome();
@@ -68,7 +68,7 @@ void PPM::rotate(const String& direction)
 {
     if(direction == "right")
     {
-        std::vector <RGB> temp;
+        Vector <RGB> temp;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width * (height - 1) + i;
@@ -92,7 +92,7 @@ void PPM::rotate(const String& direction)
     }
     else if(direction == "left")
     {
-        std::vector <RGB> temp;
+        Vector <RGB> temp;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width - i - 1;

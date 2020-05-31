@@ -23,7 +23,7 @@ class Image
         Image(){;}
         Image& operator=(const Image&);
         virtual void open() = 0;
-        virtual Image* clone()const = 0;
+        //virtual Image* clone()const = 0;
         const String get_name()const {return name;}
         virtual void grayscale() = 0;
         virtual void monochrome() = 0;

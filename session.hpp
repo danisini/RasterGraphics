@@ -2,7 +2,7 @@
 #define _SESSION_H_
 #include <iostream>
 #include "image.h"
-#include <vector>
+#include "vector.hpp"
 #include "string.hpp"
 #include "ppm.h"
 #include "pgm.hpp"
@@ -12,8 +12,8 @@ class Session
 {
     private:
         Image** images;
-        std::vector <size_t> timeAdded;
-        std::vector <String> operations;
+        Vector <size_t> timeAdded;
+        Vector <String> operations;
         size_t numImages, capacity, currOperNum, currImageNum;
         void deleteSession();
         void copySession(const Session&);
@@ -54,30 +54,7 @@ void Session::collage(const String& direction, String image1, String image2, Str
         return;
     }
     addImage(outimage);
-    images[ind1]->open();
-    images[ind2]->open();
     images[numImages - 1]->makeCollage(images[ind1], images[ind2], direction);
-    /*if(direction == "horizontal")
-    {
-        size_t wdth = images[ind1]->get_width(), cnt1 = 0, cnt2 = 0, h = images[ind1]->get_height();
-        char type = outimage[outimage.size() - 2];
-        if(type == 'p')
-        {
-            for(size_t i = 0; i < wdth; i ++)
-            {
-                for(size_t j = 0; j < h; j ++)
-                {
-                    images[numImages - 1].set_pixel(images[ind1]->get_pixel(cnt1));
-                    cnt1 ++;
-                }
-                for(size_t j = 0; j < h; j ++)
-                {
-                    images[numImages - 1].set_pixel(images[ind2]->get_pixel(cnt2));
-                    cnt2 ++;
-                }
-            }
-        }
-    }*/
 }
 void Session::saveSession(const String& path)
 {
