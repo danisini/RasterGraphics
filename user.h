@@ -153,6 +153,9 @@ User::User()
         else
         if(command == "collage")
         {
+            String direction, image1, image2, outimage;
+            cin >> direction >> image1 >> image2 >> outimage;
+            sessions[currSession]->collage(direction, image1, image2, outimage);
         }
         else
         if(command == "save")

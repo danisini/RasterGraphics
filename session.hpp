@@ -28,13 +28,63 @@ class Session
         void addImage(String path);
         void sessionInfo(const size_t&);
         void saveSession(const String&);
+        void collage(const String&, String, String, String);
 };
+void Session::collage(const String& direction, String image1, String image2, String outimage)
+{
+    int ind1 = -1, ind2 = -1;
+    for(size_t i = 0; i < numImages; i ++)
+    {
+        if(images[i]->get_name() == image1)ind1 = i;
+        if(images[i]->get_name() == image2)ind2 = i;
+    }
+    if(ind1 == -1 || ind2 == -1)
+    {
+        std::cout << "Images not found for the collage!" << std::endl;
+        return;
+    }
+    if(images[ind1]->get_width() != images[ind2]->get_width() || images[ind1]->get_height() != images[ind2]->get_height())
+    {
+        std::cout << "Images don't have the same size!" << std::endl;
+        return;
+    }
+    if(!(image1[image1.size() - 2] == image2[image2.size() - 2] && image2[image2.size() - 2] == outimage[outimage.size() - 2]))
+    {
+        std::cout << "The three pictures are not in the same format!" << std::endl;
+        return;
+    }
+    addImage(outimage);
+    images[ind1]->open();
+    images[ind2]->open();
+    images[numImages - 1]->makeCollage(images[ind1], images[ind2], direction);
+    /*if(direction == "horizontal")
+    {
+        size_t wdth = images[ind1]->get_width(), cnt1 = 0, cnt2 = 0, h = images[ind1]->get_height();
+        char type = outimage[outimage.size() - 2];
+        if(type == 'p')
+        {
+            for(size_t i = 0; i < wdth; i ++)
+            {
+                for(size_t j = 0; j < h; j ++)
+                {
+                    images[numImages - 1].set_pixel(images[ind1]->get_pixel(cnt1));
+                    cnt1 ++;
+                }
+                for(size_t j = 0; j < h; j ++)
+                {
+                    images[numImages - 1].set_pixel(images[ind2]->get_pixel(cnt2));
+                    cnt2 ++;
+                }
+            }
+        }
+    }*/
+}
 void Session::saveSession(const String& path)
 {
-    for(size_t i = 0; i < numImages; i ++)
-        images[i]->open();
+    //for(size_t i = 0; i < numImages; i ++)
+    //    images[i]->open();
     size_t vsz = operations.size();
-    /*for(size_t i = 0; i < vsz; i ++)
+    for(size_t i = 0; i < vsz; i ++)
     {
         if(operations[i] == "grayscale")
         {
@@ -44,19 +94,64 @@ void Session::saveSession(const String& path)
         else if(operations[i] == "monochrome")
         {
             for(size_t j = 0; j < timeAdded[i] - 1; j ++)
-                images[j]->monochrome(j);
+                images[j]->monochrome();
         }
         else if(operations[i] == "negative")
         {
             for(size_t j = 0; j < timeAdded[i] - 1; j ++)
-                images[j]->negative(j);
+                images[j]->negative();
         }
-        else if(operations[i] == "collage")
+        else if(operations[i] == "rotate left")
         {
-
+            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+                images[j]->rotate("left");
         }
-    }*/
-
+        else if(operations[i] == "rotate right")
+        {
+            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+                images[j]->rotate("right");
+        }
+        else
+        {
+            /*String direction = "", image1 = "", image1 = "", outimage = "";
+            size_t j = 8;
+            while(operations[i][j] != ' ')
+            {
+                direction += operations[i][j];
+                j ++;
+            }
+            j ++;
+            while(operations[i][j] != ' ')
+            {
+                image1 += operations[i][j];
+                j ++;
+            }
+            j ++;
+            while(operations[i][j] != ' ')
+            {
+                image2 += operations[i][j];
+                j ++;
+            }
+            j ++;
+            while(j < operations[i].size())
+            {
+                outimage += operations[i][j];
+                j ++;
+            }
+            int ind1 = -1, ind2 = -1;
+            for(size_t j = 0; j < numImages; j ++)
+            {
+                if(images[j]->get_name() == image1)
+                    ind1 = j;
+                if(images[j]->get_name() == image2)
+                    ind2 = j;
+            }
+            if(ind1 == -1 || ind2 == -1)
+            {
+                std::cout <<
+            }*/
+        }
+    }
     if(!(path == ""))images[0]->save(path);
     else images[0]->save(images[0]->get_name());///trqbva i name da stane tva podadenoto chrez parametura zaduljitelno!!!!
 
@@ -111,7 +206,7 @@ void Session::addImage(String path)
         images[numImages - 1] = new PGM(path);
     else if(index == 3)
         images[numImages - 1] = new PBM(path);
-
+    images[numImages - 1]->open();
 }
 void Session::addOperation(const String& operName)
 {

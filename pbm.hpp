@@ -4,6 +4,7 @@
 #include "image.h"
 #include <vector>
 #include <fstream>
+
 class PBM : public Image
 {
     private:
@@ -19,8 +20,105 @@ class PBM : public Image
         virtual void monochrome(){}
         virtual void negative();
         virtual void save(const String&);
-        virtual void rotate(const String&){}
+        virtual void rotate(const String&);
+        void set_pixel(const bool& ind){pixels.push_back(ind);}
+        virtual const RGB get_pixels(const size_t& ind)const{RGB curr; curr.R = curr.G = curr.B = pixels[ind];return curr;}
+        virtual void makeCollage(Image*, Image*, const String&);
 };
+
+void PBM::makeCollage(Image* im1, Image* im2, const String& direction)
+{
+    if(direction == "horizontal")
+    {
+        size_t w = im1->get_width(), h = im1->get_height(), cnt1 = 0, cnt2 = 0;
+        for(size_t i = 0; i < h; i ++)
+        {
+            for(size_t j = 0; j < w; j ++)
+            {
+                RGB curr = im1->get_pixels(cnt1);
+                bool now = (curr.R == 1)?1:0;
+                pixels.push_back(now);
+                cnt1 ++;
+            }
+            for(size_t j = 0; j < w; j ++)
+            {
+                RGB curr = im2->get_pixels(cnt2);
+                bool now = (curr.R == 1)?1:0;
+                pixels.push_back(now);
+                cnt2 ++;
+            }
+        }
+        width = w * 2;
+        height = h;
+    }
+    else
+    if(direction == "vertical")
+    {
+        size_t w = im1->get_width(), h = im1->get_height();
+        for(size_t i = 0; i < h * w; i ++)
+        {
+            RGB curr = im1->get_pixels(i);
+            bool now = (curr.R == 1)?1:0;
+            pixels.push_back(now);
+        }
+        for(size_t i = 0; i < h * w; i ++)
+        {
+            RGB curr = im2->get_pixels(i);
+            bool now = (curr.R == 1)?1:0;
+            pixels.push_back(now);
+        }
+        width = w;
+        height = h * 2;
+    }
+    range = (im1->get_range() > im2->get_range())?im1->get_range():im2->get_range();
+}
+void PBM::rotate(const String& direction)
+{
+    if(direction == "right")
+    {
+        std::vector <bool> temp;
+        for(size_t i = 0; i < width; i ++)
+        {
+            size_t i1 = width * (height - 1) + i;
+            for(size_t j = 0; j < height; j ++)
+            {
+                temp.push_back(pixels[i1]);
+                i1 -= width;
+            }
+        }
+        for(size_t i = 0; i < width * height; i ++)
+        {
+            pixels[i] = temp[i];
+        }
+
+        size_t swp;
+        swp = height;
+        height = width;
+        width = swp;
+    }
+    else if(direction == "left")
+    {
+        std::vector <bool> temp;
+        for(size_t i = 0; i < width; i ++)
+        {
+            size_t i1 = width - i - 1;
+            for(size_t j = 0; j < height; j ++)
+            {
+                temp.push_back(pixels[i1]);
+                i1 += width;
+            }
+        }
+        for(size_t i = 0; i < width * height; i ++)
+        {
+            pixels[i] = temp[i];
+        }
+        size_t swp;
+        swp = height;
+        height = width;
+        width = swp;
+    }
+    else std::cout << "Not a correct inputed direction." << std::endl;
+}
 void PBM::negative()
 {
     for(size_t i = 0; i < pixels.size(); i ++)

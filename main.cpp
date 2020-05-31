@@ -9,6 +9,7 @@ using namespace std;
 //#include "user.hpp"
 int main()
 {
+    ///pri suzdavane na nov kolaj priemame che se suzdava v nov fail a ne star
     /*
     ofstream oFile;
     oFile.open("picture1.ppm");
@@ -16,9 +17,9 @@ int main()
     for(int i = 0; i < 3*4; i ++)oFile << 3 << " ";
     oFile.close();
     */
-    PPM im("picture1.ppm");
+    /*PPM im("picture1.ppm");
     im.open();
-    im.rotate("right");
+    im.negative();
     im.save("picture2.ppm");
 
     PGM im1("picture14.pgm");
@@ -29,6 +30,7 @@ int main()
     PBM im2("picture3.pbm");
     im2.open();
     im2.save("picture3.pbm");
-    //User u;
+    */
+    User u;
     return 0;
 }

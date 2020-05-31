@@ -6,16 +6,6 @@
 #include <fstream>
 #include <vector>
 
-struct RGB
-{
-    size_t R, G, B;
-    RGB(size_t R_ = 0, size_t G_ = 0, size_t B_ = 0)
-    {
-        R = R_;
-        G = G_;
-        B = B_;
-    }
-};
 class PPM : public Image
 {
     private:
@@ -30,9 +20,50 @@ class PPM : public Image
         virtual void monochrome();
         virtual void negative();
         virtual void rotate(const String&);
+        //void set_pixel(const RGB& ind){pixels.push_back(ind);}
+        virtual const RGB get_pixels(const size_t& ind)const{return pixels[ind];}
+        virtual void makeCollage(Image*, Image*, const String&);
         PPM();
         PPM(String);
 };
+void PPM::makeCollage(Image* im1, Image* im2, const String& direction)
+{
+    if(direction == "horizontal")
+    {
+        size_t w = im1->get_width(), h = im1->get_height(), cnt1 = 0, cnt2 = 0;
+        for(size_t i = 0; i < h; i ++)
+        {
+            for(size_t j = 0; j < w; j ++)
+            {
+                pixels.push_back(im1->get_pixels(cnt1));
+                cnt1 ++;
+            }
+            for(size_t j = 0; j < w; j ++)
+            {
+                pixels.push_back(im2->get_pixels(cnt2));
+                cnt2 ++;
+            }
+        }
+        width = w * 2;
+        height = h;
+    }
+    else
+    if(direction == "vertical")
+    {
+        size_t w = im1->get_width(), h = im1->get_height();
+        for(size_t i = 0; i < h * w; i ++)
+        {
+            pixels.push_back(im1->get_pixels(i));
+        }
+        for(size_t i = 0; i < h * w; i ++)
+        {
+            pixels.push_back(im2->get_pixels(i));
+        }
+        width = w;
+        height = h * 2;
+    }
+    range = (im1->get_range() > im2->get_range())?im1->get_range():im2->get_range();
+}
 void PPM::rotate(const String& direction)
 {
     if(direction == "right")
@@ -62,7 +93,6 @@ void PPM::rotate(const String& direction)
     else if(direction == "left")
     {
         std::vector <RGB> temp;
-        std::cout << "tes3 "<< height << " "<< width << std::endl;
         for(size_t i = 0; i < width; i ++)
         {
             size_t i1 = width - i - 1;
@@ -72,14 +102,12 @@ void PPM::rotate(const String& direction)
                 i1 += width;
             }
         }
-        std::cout << "test2" << std::endl;
         for(size_t i = 0; i < width * height; i ++)
         {
             pixels[i].R = temp[i].R;
             pixels[i].G = temp[i].G;
             pixels[i].B = temp[i].B;
         }
-        std::cout << "test1" << std::endl;
         size_t swp;
         swp = height;
         height = width;
