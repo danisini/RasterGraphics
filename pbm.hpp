@@ -11,9 +11,6 @@ class PBM : public Image
         Vector <bool> pixels;
     public:
         virtual void open() override;
-        const size_t get_width()const{return width;}
-        const size_t get_height()const{return height;}
-        //virtual Image* clone()const{return new PBM(*this);}
         PBM();
         PBM(String);
         virtual void grayscale(){}
@@ -21,7 +18,6 @@ class PBM : public Image
         virtual void negative();
         virtual void save(const String&);
         virtual void rotate(const String&);
-        void set_pixel(const bool& ind){pixels.push_back(ind);}
         virtual const RGB get_pixels(const size_t& ind)const{RGB curr; curr.R = curr.G = curr.B = pixels[ind];return curr;}
         virtual void makeCollage(Image*, Image*, const String&);
 };
@@ -117,7 +113,7 @@ void PBM::rotate(const String& direction)
         height = width;
         width = swp;
     }
-    else std::cout << "Not a correct inputed direction." << std::endl;
+    else std::cout << "Not a correct inputed direction." << std::endl;;
 }
 void PBM::negative()
 {
@@ -132,7 +128,7 @@ void PBM::save(const String& name_)
     std::ofstream file(name.stringToChar(), std::ios::out);
     if(!file)
     {
-        std::cerr << "Couldn't open the file!" << std::endl;
+        std::cerr << "Couldn't open the file!" << std::endl;;
         return;
     }
     file << "P1" << '\n' << width << " " << height << '\n';
@@ -169,7 +165,7 @@ void PBM::open()
     std::ifstream file(name.stringToChar(), std::ios::in);
     if(!file)
     {
-        std::cerr << "Failed to open!" << std::endl;
+        std::cerr << "Failed to open!" << std::endl;;
         return;
     }
     char type[4];

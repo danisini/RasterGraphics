@@ -21,8 +21,8 @@ class Vector
 template <class T>
 void Vector<T>::clear()
 {
-    while(sz != 0)
-        pop_back();
+    if(arr != nullptr)delete[] arr;
+    sz = 0;
 }
 template <class T>
 Vector<T>::Vector()
@@ -50,12 +50,17 @@ void Vector<T>::push_back(const T& newEl)
 template <class T>
 void Vector<T>::pop_back()
 {
-    T* temp = new T[sz - 1];
-    for(size_t i = 0; i < sz; i ++)
-        temp[i] = arr[i];
-    delete[] arr;
-    arr = temp;
-    sz --;
+    if(sz > 1)
+    {
+        T* temp = new T[sz - 1];
+        for(size_t i = 0; i < sz - 1; i ++)
+            temp[i] = arr[i];
+        delete[] arr;
+        arr = temp;
+        sz --;
+    }
+    else if(arr != nullptr)delete[] arr;
+    sz = 0;
 }
 template <class T>
 T& Vector<T>::operator[](const size_t& ind) const

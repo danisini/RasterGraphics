@@ -7,14 +7,13 @@
 #include "ppm.h"
 #include "pgm.hpp"
 #include "pbm.hpp"
-using namespace std;
 class Session
 {
     private:
         Image** images;
         Vector <size_t> timeAdded;
         Vector <String> operations;
-        size_t numImages, capacity, currOperNum, currImageNum;
+        size_t numImages, capacity;
         void deleteSession();
         void copySession(const Session&);
         void resizeSession();
@@ -40,17 +39,17 @@ void Session::collage(const String& direction, String image1, String image2, Str
     }
     if(ind1 == -1 || ind2 == -1)
     {
-        std::cout << "Images not found for the collage!" << std::endl;
+        std::cout << "Images not found for the collage!" << std::endl;;
         return;
     }
     if(images[ind1]->get_width() != images[ind2]->get_width() || images[ind1]->get_height() != images[ind2]->get_height())
     {
-        std::cout << "Images don't have the same size!" << std::endl;
+        std::cout << "Images don't have the same size!" << std::endl;;
         return;
     }
     if(!(image1[image1.size() - 2] == image2[image2.size() - 2] && image2[image2.size() - 2] == outimage[outimage.size() - 2]))
     {
-        std::cout << "The three pictures are not in the same format!" << std::endl;
+        std::cout << "The three pictures are not in the same format!" << std::endl;;
         return;
     }
     addImage(outimage);
@@ -58,79 +57,37 @@ void Session::collage(const String& direction, String image1, String image2, Str
 }
 void Session::saveSession(const String& path)
 {
-    //for(size_t i = 0; i < numImages; i ++)
-    //    images[i]->open();
     size_t vsz = operations.size();
     for(size_t i = 0; i < vsz; i ++)
     {
         if(operations[i] == "grayscale")
         {
-            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+            for(size_t j = 0; j < timeAdded[i]; j ++)
                 images[j]->grayscale();
         }
         else if(operations[i] == "monochrome")
         {
-            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+            for(size_t j = 0; j < timeAdded[i]; j ++)
                 images[j]->monochrome();
         }
         else if(operations[i] == "negative")
         {
-            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+            for(size_t j = 0; j < timeAdded[i]; j ++)
                 images[j]->negative();
         }
         else if(operations[i] == "rotate left")
         {
-            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+            for(size_t j = 0; j < timeAdded[i]; j ++)
                 images[j]->rotate("left");
         }
         else if(operations[i] == "rotate right")
         {
-            for(size_t j = 0; j < timeAdded[i] - 1; j ++)
+            for(size_t j = 0; j < timeAdded[i]; j ++)
                 images[j]->rotate("right");
-        }
-        else
-        {
-            /*String direction = "", image1 = "", image1 = "", outimage = "";
-            size_t j = 8;
-            while(operations[i][j] != ' ')
-            {
-                direction += operations[i][j];
-                j ++;
-            }
-            j ++;
-            while(operations[i][j] != ' ')
-            {
-                image1 += operations[i][j];
-                j ++;
-            }
-            j ++;
-            while(operations[i][j] != ' ')
-            {
-                image2 += operations[i][j];
-                j ++;
-            }
-            j ++;
-            while(j < operations[i].size())
-            {
-                outimage += operations[i][j];
-                j ++;
-            }
-            int ind1 = -1, ind2 = -1;
-            for(size_t j = 0; j < numImages; j ++)
-            {
-                if(images[j]->get_name() == image1)
-                    ind1 = j;
-                if(images[j]->get_name() == image2)
-                    ind2 = j;
-            }
-            if(ind1 == -1 || ind2 == -1)
-            {
-                std::cout <<
-            }*/
         }
     }
     if(!(path == ""))images[0]->save(path);
-    else images[0]->save(images[0]->get_name());///trqbva i name da stane tva podadenoto chrez parametura zaduljitelno!!!!
+    else images[0]->save(images[0]->get_name());
 
     for(size_t i = 1; i < numImages; i ++)
         images[i]->save(images[i]->get_name());
@@ -143,11 +100,11 @@ void Session::saveSession(const String& path)
 }
 void Session::sessionInfo(const size_t& sessionNum)
 {
-    std::cout << "Session ID = " << sessionNum + 1<< std::endl;
+    std::cout << "Session ID = " << sessionNum + 1<< std::endl;;
     for(size_t i = 0; i < numImages; i ++)
-        std::cout << "Image number " << i + 1 << " is: " << images[i]->get_name() << std::endl;
+        std::cout << "Image number " << i + 1 << " is: " << images[i]->get_name() << std::endl;;
     for(size_t i = 0; i < operations.size(); i ++)
-        std::cout << "Operation number " << i + 1 << " will be: " << operations[i] << " and it will be used on first " << timeAdded[i] << " images if possible." << std::endl;
+        std::cout << "Operation number " << i + 1 << " will be: " << operations[i] << " and it will be used on first " << timeAdded[i] << " images if possible." << std::endl;;
 }
 void Session::resizeSession()
 {
@@ -171,7 +128,7 @@ void Session::addImage(String path)
     else if(path[sz - 2] == 'b')index = 3;
     else
     {
-        cout << "Not a valid format." << endl;
+        std::cout << "Not a valid format." << std::endl;;
         return;
     }
     numImages ++;
@@ -184,6 +141,7 @@ void Session::addImage(String path)
     else if(index == 3)
         images[numImages - 1] = new PBM(path);
     images[numImages - 1]->open();
+    std::cout << "Image was added successfully!" << std::endl;
 }
 void Session::addOperation(const String& operName)
 {
@@ -192,8 +150,7 @@ void Session::addOperation(const String& operName)
 }
 void Session::deleteSession()
 {
-    operations.clear();
-    timeAdded.clear();
+    std::cout << numImages << std::endl;
     for(size_t i = 0; i < numImages; i ++)
         if(images[i] != nullptr)delete images[i];
     if(images != nullptr)delete[] images;
@@ -221,8 +178,6 @@ Session::Session()
 {
     numImages = 0;
     capacity = 8;
-    currOperNum = 0;
-    currImageNum = 0;
     images = new Image*[capacity];
 }
 

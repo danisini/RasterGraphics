@@ -11,20 +11,16 @@ class PPM : public Image
     private:
         Vector <RGB> pixels;
     public:
+        PPM();
+        PPM(String);
         virtual void open() override;
-        const size_t get_width()const{return width;}
-        const size_t get_height()const{return height;}
-        //virtual Image* clone()const{return new PPM(*this);}
         virtual void save(const String&);
         virtual void grayscale();
         virtual void monochrome();
         virtual void negative();
         virtual void rotate(const String&);
-        //void set_pixel(const RGB& ind){pixels.push_back(ind);}
         virtual const RGB get_pixels(const size_t& ind)const{return pixels[ind];}
         virtual void makeCollage(Image*, Image*, const String&);
-        PPM();
-        PPM(String);
 };
 void PPM::makeCollage(Image* im1, Image* im2, const String& direction)
 {
@@ -102,21 +98,24 @@ void PPM::rotate(const String& direction)
                 i1 += width;
             }
         }
+
         for(size_t i = 0; i < width * height; i ++)
         {
             pixels[i].R = temp[i].R;
             pixels[i].G = temp[i].G;
             pixels[i].B = temp[i].B;
         }
+
         size_t swp;
         swp = height;
         height = width;
         width = swp;
     }
-    else std::cout << "Not a correct inputed direction." << std::endl;
+    else std::cout << "Not a correct inputed direction." << std::endl;;
 }
 void PPM::negative()
 {
+    std::cout << "here" << std::endl;
     for(size_t i = 0; i < pixels.size(); i ++)
     {
         pixels[i].R = range - pixels[i].R;
@@ -192,7 +191,7 @@ void PPM::open()
     std::ifstream file(name.stringToChar(), std::ios::in);
     if(!file)
     {
-        std::cerr << "Failed to open!" << std::endl;
+        std::cerr << "Failed to open!" << std::endl;;
         return;
     }
     char type[4];
