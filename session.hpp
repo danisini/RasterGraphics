@@ -218,7 +218,7 @@ void Session::deleteSession()
     operations.clear();
     timeAdded.clear();
     for(size_t i = 0; i < numImages; i ++)
-        delete images[i];
+        if(images[i] != nullptr)delete images[i];
     if(images != nullptr)delete[] images;
 }
 void Session::undo()

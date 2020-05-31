@@ -44,7 +44,7 @@ void User::help()
 void User::deleteUser()
 {
     for(size_t i = 0; i < capacity; i ++)
-        delete sessions[i];
+        if(sessions[i] != nullptr)delete sessions[i];
     if(sessions != nullptr)delete[] sessions;
 }
 void User::resizeSessions()
@@ -73,6 +73,7 @@ User::User()
     while(!(command == "exit"))
     {
         cin >> command;
+        cout <<"|"<< command << "|" <<endl;
         if(command == "load")
         {
             String path;
@@ -139,15 +140,20 @@ User::User()
         else
         if(command == "switch")
         {
-            int num;
-            cin >> num;
+            String n;
+            cin >> n;
+            int num = 0;
+            for(size_t i = 0; i < n.size(); i ++)
+            {
+                num = num * 10 + (n[i] - '0');
+            }
             if(num <= 0 || num > numSessions)
             {
                 cout << "Not a valid session number." << endl;
             }
             else
             {
-                currSession = num;
+                currSession = num - 1;
             }
         }
         else
@@ -180,6 +186,11 @@ User::User()
         {
             help();
         }
+        else if(command == "exit")
+        {
+            break;
+        }
+        else cout << "Not a valid command" << endl;
     }
 }
 
